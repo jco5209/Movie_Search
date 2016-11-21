@@ -168,15 +168,14 @@ button {
 .more-info {
   position: absolute;
   display: none;
-  top: 0;
-  left: 100%;
+  top: 3%;
+  left: 97%;
   width: 420px;
   height: 381px;
   overflow: auto;
-  font-size: 12px;
-  background-color: rgba(0, 20, 3, 0.95);
+  font-size: 16px;
+  background-color: rgba(0,153,204, 0.99);
   color: #fff;
-  border: 3px solid #00d27f;
   z-index: 2001;
 }
 
@@ -192,7 +191,7 @@ li:nth-child(4n-1) .more-info {
 
 .plot {
   margin: 2em 1em 1em;
-  font-weight: bold;
+  font-family: 'Slabo 27px', serif;
 }
 
 .review {
@@ -204,12 +203,8 @@ li:nth-child(4n-1) .more-info {
   position: absolute;
   left: 75%;
   bottom: 70%;
-  height: 25px;
-  width: 25px;
   padding: 1px;
   cursor: pointer;
-  border: 1px solid #fff;
-  border-radius: 25%;
 }
 
 .more-img {

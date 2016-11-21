@@ -125,7 +125,7 @@
             "<div class='more-info'>" +
               "<div class='more-img'><img src=" + results.Search[i].Poster + "><span>" + results.Search[i].Title + "</span></br><span>" + results.Search[i].Year + "</span></br><span>IMDb Rating: " + results.Search[i].score +"</span><span class='exit0'>X</span></div>" +
               "<p class='review'>" + results.Search[i].review + "</p>" +
-              "<p class='plot'>" + results.Search[i].moreInfo + "</p>" +
+              "<p class='plot'>PLOT: " + "<span></br></span>" + results.Search[i].moreInfo + "</p>" +
             "</div>" +
           "</li>"
 
