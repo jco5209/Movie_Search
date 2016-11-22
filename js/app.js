@@ -70,7 +70,6 @@
         q++;
         if(q < x.Search.length) {
           omdbAPIid(x);
-          console.log(data);
         } else {
           moviesFound(x);
           q = 0;
@@ -123,15 +122,28 @@
               "<a class='description' href='#'>More Info</a>" + 
             "</div>" +
             "<div class='more-info'>" +
-              "<div class='more-img'><img src=" + results.Search[i].Poster + "><span>" + results.Search[i].Title + "</span></br><span>" + results.Search[i].Year + "</span></br><span>IMDb Rating: " + results.Search[i].score +"</span><span class='exit0'>X</span></div>" +
+              "<div class='more-img'>" + poster + "<span>" + results.Search[i].Title + "</span></br><span>" + results.Search[i].Year + "</span></br><span>IMDb Rating: <span class=" + movieRating(results.Search[i].score) +">" + results.Search[i].score + "</span></span><span class='exit0'>X</span></div>" +
               "<p class='review'>" + results.Search[i].review + "</p>" +
-              "<p class='plot'>PLOT: " + "<span></br></span>" + results.Search[i].moreInfo + "</p>" +
+              "<p class='plot'>" + "<span class='indi'>PLOT</span>" + results.Search[i].moreInfo + "</p>" +
             "</div>" +
           "</li>"
-
         ); 
       }
       $(".description").hide();
+    }
+
+    /*
+      moveRating() changes the color each movie's rating number based on the rating score
+    */
+    function movieRating(x) {
+      var visualScore = parseInt(x);
+      if(visualScore >= 8) {
+        return 'score-good'
+      } else if(visualScore >= 5.5) {
+        return 'score-average'
+      } else {
+        return 'score-bad'
+      }
     }
 
     /*
@@ -150,19 +162,6 @@
     }
 
     /*
-      returns input values for both name & year fields
-    */
-    function searchParam() {
-
-      var exports = {
-        name: $("#search").val(),
-        year: $("#year").val()
-      };
-
-      return exports;
-    } 
-
-    /*
       visual indicator for 'More Info' for each movie
     */
     $("#movies").on("mouseenter", "li", function() {
@@ -176,13 +175,34 @@
       toggles for additional movie information
     */ 
     $("#movies").on("click", ".info", function(e) {
+      e.stopPropagation();
       e.preventDefault();
       $(this).parents("li").children(".more-info").toggle("fast", function(){});
+      $(this).parents("li").siblings().children(".more-info").hide("fast");
     }); 
     $("#movies").on("click", ".exit0", function(e) {
       e.preventDefault();
       $(this).parents("li").children(".more-info").toggle("fast", function(){});
-    });       
+    });
+    $(document).click(function() {
+      var $el = $(".more-info");
+      if($el.is(":visible")) {
+        $el.hide("fast");
+      }
+    });   
+
+    /*
+      returns input values for both name & year fields
+    */
+    function searchParam() {
+
+      var exports = {
+        name: $("#search").val(),
+        year: $("#year").val()
+      };
+
+      return exports;
+    }       
 
     /*
       initial ajax request trigger

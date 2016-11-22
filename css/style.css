@@ -170,13 +170,18 @@ button {
   display: none;
   top: 3%;
   left: 97%;
-  width: 420px;
+  width: 520px;
   height: 381px;
   overflow: auto;
   font-size: 16px;
-  background-color: rgba(0,153,204, 0.99);
-  color: #fff;
+  background-color: rgba(255,255,255, 0.95);
+  border: 1px solid #000;
+  color: #000;
   z-index: 2001;
+}
+
+.more-info .poster-placeholder {
+  right: 100%;
 }
 
 li:nth-child(4n) .more-info {
@@ -194,17 +199,48 @@ li:nth-child(4n-1) .more-info {
   font-family: 'Slabo 27px', serif;
 }
 
+.indi {
+  display: block;
+  text-align: center;
+  text-decoration: underline;
+}
+
 .review {
   margin: 2em 1em 1em;
   font-style: italic;
 }
 
+.more-img .score-good {
+  color: green;
+  margin: 0;
+}
+
+.more-img .score-average {
+  color: yellow;
+  margin: 0;  
+}
+
+.more-img .score-bad {
+  color: red;
+  margin: 0;  
+}
+
 .exit0 {
   position: absolute;
-  left: 75%;
-  bottom: 70%;
+  left: 77%;
+  bottom: 68%;
+  height: 25px;
+  width: 25px;
+  text-align: center;
   padding: 1px;
+  border: 1px solid white;
+  border-radius: 25%;
   cursor: pointer;
+}
+
+.exit0:hover {
+  color: orange;
+  border-color: orange;
 }
 
 .more-img {
