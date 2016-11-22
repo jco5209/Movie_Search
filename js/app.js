@@ -138,11 +138,11 @@
     function movieRating(x) {
       var visualScore = parseInt(x);
       if(visualScore >= 8) {
-        return 'score-good'
+        return 'score-good';
       } else if(visualScore >= 5.5) {
-        return 'score-average'
+        return 'score-average';
       } else {
-        return 'score-bad'
+        return 'score-bad';
       }
     }
 
