@@ -10,4 +10,5 @@
 * Use the API data to dynamically create HTML displaying a movie's title, year of release, and poster image.
 * Display a placeholder icon when the API does not return poster data.
 * Let users know when search returns no movie data.
-* For extra credit, link a movie to its IMDb page, and allow a user to filter the search by year of release.
+
+*For extra credit, link a movie to its IMDb page, and allow a user to filter the search by year of release.*
