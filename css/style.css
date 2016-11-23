@@ -184,12 +184,12 @@ button {
   right: 100%;
 }
 
-li:nth-child(4n) .more-info {
+li:nth-child(5n) .more-info {
   left: initial;
   right: 100%;
 }
 
-li:nth-child(4n-1) .more-info {
+li:nth-child(5n-1) .more-info {
   left: initial;
   right: 100%;
 }
@@ -264,6 +264,41 @@ li:nth-child(4n-1) .more-info {
   max-width: 75px;
 }
 
+.pagination {
+  clear: both;
+  height: 26px;
+  padding: 3em;
+  text-align: center;
+}
+
+.pagination a {
+  display: inline-block;
+  line-height: 26px;
+  width: 35px;
+  margin: 3px;
+  background-color: #00d27f;
+  color: #fff;
+  border: 1px solid black;
+  border-radius: 25%;
+}
+
+.pagination a:hover {
+  background-color: orange;
+}
+
+.cycle-more,
+.cycle-less {
+  vertical-align: bottom;
+  font-size: 2em;
+  cursor: pointer;
+  line-height: 10px;
+}
+
+.cycle-more:hover,
+.cycle-less:hover {
+  color: orange;
+}
+
 /* ================================= 
   Layout Styles
 ==================================== */
@@ -271,7 +306,7 @@ li:nth-child(4n-1) .more-info {
 .inner,
 .main-content {
   width: 90%;
-  max-width: 1025px;
+  max-width: 1225px;
   margin: auto;
 }
 
@@ -379,10 +414,10 @@ li:nth-child(4n-1) .more-info {
 
 @media (min-width: 1000px) {
   .movie-list li {
-    width: 25%;
+    width: 20%;
   }
 
-  .movie-list li:nth-of-type(4n+1) {
+  .movie-list li:nth-of-type(5n+1) {
     clear: left;
   }
 }

@@ -1,23 +1,33 @@
+/* global $ */
+
+
 (function() {
 
+
   /*
-    ajax request for movie name search & year filter -
-    searchParam() returns input values for name & year input -
-    if results.Response is true, call omdbAPIid(results) -
+    ajax request for movie name search -
+    searchParam() returns input values from name & year input -
+    if results.Response is true, call omdbAPIid(results) to retrieve additional movie information per returned result -
     else if false, call noMoves();
   */
-  function omdbAPIsearch() {
+  function omdbAPIsearch(page) {
+
+    if(page === undefined) {
+      page = '1';
+    }
 
     $.ajax({
 
-      url: "http://www.omdbAPI.com/?s=" + searchParam().name + "&y=" + searchParam().year, 
+      url: "http://www.omdbAPI.com/?s=" + searchParam().name + "&y=" + searchParam().year + "&page=" + page + "&type=movie", 
       
     })
 
       .done(function(results) {
 
+        console.log(results);
+
         if(results.Response == "True") {
-          omdbAPIid(results);         
+          omdbAPIid(results, page);         
         } else if(results.Response == "False") {
           noMovies();
         }
@@ -38,44 +48,44 @@
       });
   }
 
+
   /*
-    omdbAPIid() uses omdbAPIsearch()'s results to search for a specific movie title -
-    ajax requests are made based on length of omdbAPIsearch()'s results -
+    omdbAPIid() uses omdbAPIsearch()'s results to search for each returned movie title -
     apply properties of plot, rating & review for each result -
     once all properties have been applied to all results, call moviesFound(x)
   */
-
   var q = 0;
-  function omdbAPIid(x) {
-
+  function omdbAPIid(searchResults, page) {
 
     $.ajax({
 
-      url: "http://www.omdbAPI.com/?t=" + x.Search[q].Title + "&plot=full&tomatoes=true", 
+      url: "http://www.omdbAPI.com/?t=" + searchResults.Search[q].Title + "&plot=full&tomatoes=true", 
 
     })
+
     .done(function(data) {
 
       if(data.Response == "True") {
 
-        x.Search[q].moreInfo = data.Plot;
-        x.Search[q].score = data.imdbRating;
+        searchResults.Search[q].moreInfo = data.Plot;
+        searchResults.Search[q].score = data.imdbRating;
 
         if(data.tomatoConsensus == "N/A") {
-          x.Search[q].review = "";
+          searchResults.Search[q].review = "";
         } else {
-          x.Search[q].review = "IMDb Consensus: '" + data.tomatoConsensus + "'";
+          searchResults.Search[q].review = "IMDb Consensus: '" + data.tomatoConsensus + "'";
         }
 
         q++;
-        if(q < x.Search.length) {
-          omdbAPIid(x);
+        if(q < searchResults.Search.length) {
+          omdbAPIid(searchResults, page);
         } else {
-          moviesFound(x);
+          moviesFound(searchResults, page);
           q = 0;
         }
+
       } else if (data.Response == "False") {
-        console.log('error in description ajax');
+        console.log('error in omdbAPIid');
       }
     })
       .fail(function(data) {
@@ -86,16 +96,18 @@
 
   }
 
+
     /*
       for each result, generate li w/ appropiate elements to display movie title, year, poster, imdb link, plot, rating & review if available -
       if poster image is not available, load default image
     */
-    function moviesFound(results) {
+    function moviesFound(results, page) {
 
       var poster,
           imdb;   
 
       $("#movies").html("");
+      //$(".pagination").remove();
 
       for(var i = 0; i < results.Search.length; i++) {
 
@@ -129,12 +141,23 @@
           "</li>"
         ); 
       }
+
+      /*
+        if this is the intial movie search, run moviePagination() -
+        else update page number
+      */
+      if(page == '1' && !$(".pagination").length) {
+        moviePagination(results, page);
+      } else { 
+        $(".page").text("Page " + page); 
+      }
+
       $(".description").hide();
+
     }
 
-    /*
-      moveRating() changes the color each movie's rating number based on the rating score
-    */
+
+    //moveRating() changes the color each movie's rating number based on the rating score
     function movieRating(x) {
       var visualScore = parseInt(x);
       if(visualScore >= 8) {
@@ -146,9 +169,80 @@
       }
     }
 
+
+    //moviePagination() displays number of available pages based on amount of results / 10 
+    function moviePagination(results, page) {
+
+      $(".main-content").append("<div class='pagination'><button class='cycle-less'> -</button></div>");
+
+      var total = Math.ceil(parseInt(results.totalResults / 10));
+
+      if(total > 10) {
+        for(var i = 1; i < 11; i++) {
+          $(".pagination").append("<a href='#'>" + i + "</a>");
+        }        
+      }
+
+      $(".pagination").append("<button class='cycle-more'> + </button></br><span class='page'>Page " + page + "</span><span> out of " + total + "</span>");
+      
+      cycle(total);
+    } 
+
     /*
-      displays 'No Movies Found' indication when no movies are found
+      cycle() iterates through available pages on button click, iterating by 10 -
+      on cycle-more, if iteration overflows amount of pages, hide extra pages -
+      on cycle-less, if any pages are hidden, show
     */
+    function cycle(total) {
+
+      var lastPage,
+          page;
+
+      $(".main-content").on("click", ".cycle-more", function() {
+
+        lastPage = parseInt($(".pagination a:last").text());
+        
+        if(lastPage < total) {
+
+          $(".pagination a").each(function() {
+
+            page = parseInt($(this).text()) + 10;
+            $(this).text(page.toString());
+            lastPage = parseInt($(".pagination a:last").text());
+
+            if(lastPage > total) {
+
+              for(var i = 0; i < lastPage - total; i++) {
+                $(".pagination a").eq(9 - i).hide();
+              }
+
+            }
+          });
+        }
+      });
+
+      $(".main-content").on("click", ".cycle-less", function() {
+
+        lastPage = parseInt($(".pagination a:last").text());
+
+        if(lastPage > 10) {     
+
+          $(".pagination a").each(function() {
+
+            page = parseInt($(this).text()) - 10;
+            $(this).text(page.toString());
+
+            if($(this).css("display") == "none") {
+              $(this).show();
+            }
+
+          });        
+        }
+      });         
+    }   
+
+
+    // displays 'No Movies Found' indication when no movies are found
     function noMovies() {
 
       $("#movies").html("");
@@ -158,12 +252,15 @@
           "<i class='material-icons icon-help'>help_outline</i>No Movies Found That Match: " + searchParam().name +
         "</li>"
       );
-
     }
 
-    /*
-      visual indicator for 'More Info' for each movie
-    */
+    // loads new search results based on page number which was selected
+    $(".main-content").on("click", ".pagination a", function(e) {
+      e.preventDefault();
+      omdbAPIsearch($(this).text());
+    }); 
+
+    // visual indicator for 'More Info' for each movie
     $("#movies").on("mouseenter", "li", function() {
     $(this).find(".description").slideDown("fast", function() {});
     });
@@ -171,19 +268,19 @@
     $(this).find(".description").slideUp("fast", function() {});
     });
 
-    /*
-      toggles for additional movie information
-    */ 
+    // toggles for additional movie information
     $("#movies").on("click", ".info", function(e) {
       e.stopPropagation();
       e.preventDefault();
       $(this).parents("li").children(".more-info").toggle("fast", function(){});
       $(this).parents("li").siblings().children(".more-info").hide("fast");
     }); 
+
     $("#movies").on("click", ".exit0", function(e) {
       e.preventDefault();
       $(this).parents("li").children(".more-info").toggle("fast", function(){});
     });
+
     $(document).click(function() {
       var $el = $(".more-info");
       if($el.is(":visible")) {
@@ -191,9 +288,8 @@
       }
     });   
 
-    /*
-      returns input values for both name & year fields
-    */
+
+    //returns input values for both name & year fields
     function searchParam() {
 
       var exports = {
@@ -204,9 +300,8 @@
       return exports;
     }       
 
-    /*
-      initial ajax request trigger
-    */
+
+    //initial ajax request trigger
     $("#submit").click(function(e) {
       e.preventDefault();
       omdbAPIsearch();
@@ -214,22 +309,3 @@
 
 
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// -end
