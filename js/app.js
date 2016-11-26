@@ -98,7 +98,7 @@
 
 
     /*
-      for each result, generate li w/ appropiate elements to display movie title, year, poster, imdb link, plot, rating & review if available -
+      for each omdbAPISearch() result, generate li w/ appropiate elements to display movie title, year, poster, imdb link, plot, rating & review if available -
       if poster image is not available, load default image
     */
     function moviesFound(results, page) {
@@ -107,7 +107,6 @@
           imdb;   
 
       $("#movies").html("");
-      //$(".pagination").remove();
 
       for(var i = 0; i < results.Search.length; i++) {
 
@@ -170,7 +169,10 @@
     }
 
 
-    //moviePagination() displays number of available pages based on amount of results / 10 
+    /*
+      pagination for movie results, determine number of pages to create by dividing total number of search results by 10 -
+      once appropiate pagination has been appended, call cycle() with total number of pages
+    */
     function moviePagination(results, page) {
 
       $(".main-content").append("<div class='pagination'><button class='cycle-less'> -</button></div>");
@@ -242,7 +244,7 @@
     }   
 
 
-    // displays 'No Movies Found' indication when no movies are found
+    // when no movies are found from the ajax request, indicate no movies were found to the user
     function noMovies() {
 
       $("#movies").html("");
